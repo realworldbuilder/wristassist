@@ -68,4 +68,4 @@ Watch                          iPhone
 
 ## License
 
-All rights reserved.
+MIT — see [LICENSE](LICENSE).
