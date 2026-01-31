@@ -18,8 +18,8 @@ final class TranscriptionService: ObservableObject {
             let modelPath = Bundle.main.bundlePath + "/openai_whisper-tiny"
             whisperKit = try await WhisperKit(
                 modelFolder: modelPath,
-                verbose: true,
-                logLevel: .debug,
+                verbose: false,
+                logLevel: .error,
                 download: false
             )
             isModelLoaded = true
