@@ -14,10 +14,10 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "T1000001"
-               BuildableName = "WearableClawd.app"
-               BlueprintName = "WearableClawd"
-               ReferencedContainer = "container:WearableClawd.xcodeproj">
+               BlueprintIdentifier = "T2000001"
+               BuildableName = "WristAssist Watch App.app"
+               BlueprintName = "WristAssist Watch App"
+               ReferencedContainer = "container:WristAssist.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -43,10 +43,10 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "T1000001"
-            BuildableName = "WearableClawd.app"
-            BlueprintName = "WearableClawd"
-            ReferencedContainer = "container:WearableClawd.xcodeproj">
+            BlueprintIdentifier = "T2000001"
+            BuildableName = "WristAssist Watch App.app"
+            BlueprintName = "WristAssist Watch App"
+            ReferencedContainer = "container:WristAssist.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -60,10 +60,10 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "T1000001"
-            BuildableName = "WearableClawd.app"
-            BlueprintName = "WearableClawd"
-            ReferencedContainer = "container:WearableClawd.xcodeproj">
+            BlueprintIdentifier = "T2000001"
+            BuildableName = "WristAssist Watch App.app"
+            BlueprintName = "WristAssist Watch App"
+            ReferencedContainer = "container:WristAssist.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

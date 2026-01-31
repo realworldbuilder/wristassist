@@ -1,7 +1,7 @@
 import SwiftUI
 
 @main
-struct WearableClawdApp: App {
+struct WristAssistApp: App {
     @StateObject private var connectivityManager = PhoneConnectivityManager()
 
     var body: some Scene {

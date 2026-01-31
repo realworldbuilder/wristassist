@@ -1,7 +1,7 @@
 import SwiftUI
 
 @main
-struct WearableClawdWatchApp: App {
+struct WristAssistWatchApp: App {
     var body: some Scene {
         WindowGroup {
             RecordingView()
