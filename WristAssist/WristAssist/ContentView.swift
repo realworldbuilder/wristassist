@@ -188,7 +188,14 @@ struct ContentView: View {
                 .font(.title2)
                 .foregroundStyle(.white)
                 .frame(width: 56, height: 56)
-                .background(.blue, in: Circle())
+                .background(
+                    LinearGradient(
+                        colors: [Color(red: 0.3, green: 0.85, blue: 0.2), Color(red: 0.1, green: 0.65, blue: 0.25)],
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    ),
+                    in: Circle()
+                )
                 .shadow(radius: 4)
         }
         .padding(24)
