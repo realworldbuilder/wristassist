@@ -12,6 +12,7 @@
 		A1000003 /* TranscriptionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000003 /* TranscriptionService.swift */; };
 		A1000004 /* PhoneConnectivityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000004 /* PhoneConnectivityManager.swift */; };
 		A1000005 /* ConnectivityConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000010 /* ConnectivityConstants.swift */; };
+		A1000008 /* PhoneAudioRecorderService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1000008 /* PhoneAudioRecorderService.swift */; };
 		A2000001 /* WristAssistWatchApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2000001 /* WristAssistWatchApp.swift */; };
 		A2000002 /* RecordingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2000002 /* RecordingView.swift */; };
 		A2000003 /* AudioRecorderService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2000003 /* AudioRecorderService.swift */; };
@@ -60,6 +61,7 @@
 		B2000003 /* AudioRecorderService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioRecorderService.swift; sourceTree = "<group>"; };
 		B2000004 /* WatchConnectivityManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchConnectivityManager.swift; sourceTree = "<group>"; };
 		B2000006 /* ExtendedSessionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtendedSessionManager.swift; sourceTree = "<group>"; };
+		B1000008 /* PhoneAudioRecorderService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneAudioRecorderService.swift; sourceTree = "<group>"; };
 		B1000006 /* openai_whisper-tiny */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "Models/openai_whisper-tiny"; sourceTree = "<group>"; };
 		B1000007 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B2000005 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -111,6 +113,7 @@
 				B1000002 /* ContentView.swift */,
 				B1000003 /* TranscriptionService.swift */,
 				B1000004 /* PhoneConnectivityManager.swift */,
+				B1000008 /* PhoneAudioRecorderService.swift */,
 				B1000006 /* openai_whisper-tiny */,
 				B1000007 /* Assets.xcassets */,
 			);
@@ -250,6 +253,7 @@
 				A1000002 /* ContentView.swift in Sources */,
 				A1000003 /* TranscriptionService.swift in Sources */,
 				A1000004 /* PhoneConnectivityManager.swift in Sources */,
+				A1000008 /* PhoneAudioRecorderService.swift in Sources */,
 				A1000005 /* ConnectivityConstants.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -404,7 +408,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "";
 				INFOPLIST_KEY_CFBundleDisplayName = WristAssist;
@@ -437,7 +441,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "";
 				INFOPLIST_KEY_CFBundleDisplayName = WristAssist;
@@ -471,7 +475,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "";
 				INFOPLIST_KEY_CFBundleDisplayName = WristAssist;
@@ -501,7 +505,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "";
 				INFOPLIST_KEY_CFBundleDisplayName = WristAssist;

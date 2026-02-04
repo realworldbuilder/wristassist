@@ -1,5 +1,6 @@
 import Combine
 import Foundation
+import os
 import WatchConnectivity
 
 struct TranscriptionRecord: Identifiable, Hashable, Codable {
@@ -16,8 +17,11 @@ struct TranscriptionRecord: Identifiable, Hashable, Codable {
 
 @MainActor
 final class PhoneConnectivityManager: NSObject, ObservableObject {
+    private static let logger = Logger(subsystem: "com.wristassist.app", category: "PhoneConnectivityManager")
+
     @Published var transcriptions: [TranscriptionRecord] = []
     @Published var isProcessing = false
+    @Published var lastLocalError: String?
 
     private let session: WCSession
     private let transcriptionService = TranscriptionService()
@@ -57,7 +61,15 @@ final class PhoneConnectivityManager: NSObject, ObservableObject {
         }
     }
 
+    func transcribeLocalAudio(at url: URL) {
+        processAudio(at: url, fromWatch: false)
+    }
+
     private func handleReceivedAudio(at url: URL) {
+        processAudio(at: url, fromWatch: true)
+    }
+
+    private func processAudio(at url: URL, fromWatch: Bool) {
         Task { @MainActor in
             isProcessing = true
             defer { isProcessing = false }
@@ -69,14 +81,20 @@ final class PhoneConnectivityManager: NSObject, ObservableObject {
                 let record = TranscriptionRecord(text: text, timestamp: Date())
                 transcriptions.insert(record, at: 0)
                 saveTranscriptions()
-                sendTranscriptionToWatch(text)
+                if fromWatch {
+                    sendTranscriptionToWatch(text)
+                }
 
             case .failure(let error):
                 let message = error.localizedDescription
-                sendErrorToWatch(message)
+                if fromWatch {
+                    sendErrorToWatch(message)
+                } else {
+                    lastLocalError = message
+                }
             }
 
-            // Clean up the received audio file
+            // Clean up the audio file
             try? FileManager.default.removeItem(at: url)
         }
     }
@@ -106,8 +124,10 @@ final class PhoneConnectivityManager: NSObject, ObservableObject {
     // MARK: - Persistence
 
     private static var transcriptionsFileURL: URL {
-        FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
-            .appendingPathComponent("transcriptions.json")
+        guard let documentsDir = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first else {
+            fatalError("Documents directory not found")
+        }
+        return documentsDir.appendingPathComponent("transcriptions.json")
     }
 
     private func saveTranscriptions() {
@@ -115,7 +135,7 @@ final class PhoneConnectivityManager: NSObject, ObservableObject {
             let data = try JSONEncoder().encode(transcriptions)
             try data.write(to: Self.transcriptionsFileURL, options: .atomic)
         } catch {
-            print("Failed to save transcriptions: \(error)")
+            Self.logger.error("Failed to save transcriptions: \(error)")
         }
     }
 
@@ -126,7 +146,7 @@ final class PhoneConnectivityManager: NSObject, ObservableObject {
             let data = try Data(contentsOf: url)
             transcriptions = try JSONDecoder().decode([TranscriptionRecord].self, from: data)
         } catch {
-            print("Failed to load transcriptions: \(error)")
+            Self.logger.error("Failed to load transcriptions: \(error)")
         }
     }
 
@@ -163,7 +183,7 @@ extension PhoneConnectivityManager: WCSessionDelegate {
                 self.handleReceivedAudio(at: destURL)
             }
         } catch {
-            print("Failed to copy received audio file: \(error)")
+            Self.logger.error("Failed to copy received audio file: \(error)")
         }
     }
 }

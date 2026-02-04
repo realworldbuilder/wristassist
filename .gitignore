@@ -4,5 +4,9 @@ xcuserdata/
 DerivedData/
 build/
 
+# Build artifacts
+*.ipa
+*.xcarchive
+
 # macOS
 .DS_Store

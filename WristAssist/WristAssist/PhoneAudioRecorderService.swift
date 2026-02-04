@@ -3,8 +3,8 @@ import Foundation
 import os
 
 @MainActor
-final class AudioRecorderService: NSObject, ObservableObject {
-    private static let logger = Logger(subsystem: "com.wristassist.app.watchkitapp", category: "AudioRecorderService")
+final class PhoneAudioRecorderService: NSObject, ObservableObject {
+    private static let logger = Logger(subsystem: "com.wristassist.app", category: "PhoneAudioRecorderService")
 
     @Published var isRecording = false
     @Published var recordingDuration: TimeInterval = 0
@@ -15,13 +15,13 @@ final class AudioRecorderService: NSObject, ObservableObject {
 
     private var recordingURL: URL {
         let dir = FileManager.default.temporaryDirectory
-        return dir.appendingPathComponent("voicenote.wav")
+        return dir.appendingPathComponent("phone_voicenote.wav")
     }
 
     func startRecording() {
         let session = AVAudioSession.sharedInstance()
         do {
-            try session.setCategory(.record, mode: .default)
+            try session.setCategory(.playAndRecord, mode: .default)
             try session.setActive(true)
         } catch {
             Self.logger.error("Failed to configure audio session: \(error)")

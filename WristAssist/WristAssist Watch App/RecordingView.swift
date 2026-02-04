@@ -6,6 +6,7 @@ struct RecordingView: View {
     @StateObject private var extendedSession = ExtendedSessionManager()
 
     @Environment(\.isLuminanceReduced) var isLuminanceReduced
+    @Environment(\.accessibilityReduceMotion) var reduceMotion
 
     @State private var isPulsing = false
     @State private var ringRotation: Double = 0
@@ -73,6 +74,7 @@ struct RecordingView: View {
             Image(systemName: recorder.isRecording ? "mic.fill" : "mic")
                 .font(.system(size: 36, weight: .medium))
                 .foregroundStyle(.white.opacity(0.6))
+                .accessibilityLabel(recorder.isRecording ? "Recording in progress" : "Microphone idle")
 
             if recorder.isRecording {
                 Text(formattedDuration)
@@ -112,6 +114,7 @@ struct RecordingView: View {
                         )
                         .frame(width: 90, height: 90)
                         .opacity(isPulsing ? 0.8 : 0.3)
+                        .accessibilityHidden(true)
                 }
 
                 // Rotating ring when recording
@@ -126,6 +129,7 @@ struct RecordingView: View {
                         )
                         .frame(width: 82, height: 82)
                         .rotationEffect(.degrees(ringRotation))
+                        .accessibilityHidden(true)
                 }
 
                 // Main gradient circle
@@ -148,6 +152,8 @@ struct RecordingView: View {
         }
         .buttonStyle(.plain)
         .sensoryFeedback(.impact, trigger: recorder.isRecording)
+        .accessibilityLabel(recorder.isRecording ? "Stop recording" : "Start recording")
+        .accessibilityHint(recorder.isRecording ? "Stops recording and sends audio for transcription" : "Begins recording a voice note")
     }
 
     // MARK: - Status Area
@@ -165,6 +171,8 @@ struct RecordingView: View {
                     .font(.system(.body, design: .monospaced))
                     .foregroundStyle(.white)
             }
+            .accessibilityElement(children: .combine)
+            .accessibilityLabel("Recording, \(spokenDuration)")
         } else if connectivity.isSending {
             VStack(spacing: 6) {
                 ProgressView()
@@ -175,6 +183,7 @@ struct RecordingView: View {
                     .foregroundStyle(.green)
                     .fixedSize()
             }
+            .accessibilityLabel("Transcribing your recording")
         } else {
             Text("Tap to record")
                 .font(.caption)
@@ -201,6 +210,7 @@ struct RecordingView: View {
                 )
                 .opacity(showSnippet ? 1 : 0)
                 .offset(y: showSnippet ? 0 : 12)
+                .accessibilityLabel(transcription)
         }
 
         if let error = connectivity.lastError {
@@ -225,6 +235,22 @@ struct RecordingView: View {
         return String(format: "%d:%02d", mins, secs)
     }
 
+    private var spokenDuration: String {
+        let total = Int(recorder.recordingDuration)
+        let mins = total / 60
+        let secs = total % 60
+        switch (mins, secs) {
+        case (0, 1): return "1 second"
+        case (0, _): return "\(secs) seconds"
+        case (1, 0): return "1 minute"
+        case (1, 1): return "1 minute 1 second"
+        case (1, _): return "1 minute \(secs) seconds"
+        case (_, 0): return "\(mins) minutes"
+        case (_, 1): return "\(mins) minutes 1 second"
+        default: return "\(mins) minutes \(secs) seconds"
+        }
+    }
+
     private func truncatedSnippet(_ text: String, maxLength: Int = 80) -> String {
         guard text.count > maxLength else { return text }
         let trimmed = text.prefix(maxLength)
@@ -242,14 +268,20 @@ struct RecordingView: View {
     // MARK: - Animations
 
     private func startAnimations() {
-        withAnimation(.easeInOut(duration: 0.8).repeatForever(autoreverses: true)) {
+        if reduceMotion {
             isPulsing = true
-        }
-        withAnimation(.linear(duration: 2.0).repeatForever(autoreverses: false)) {
-            ringRotation = 360
-        }
-        withAnimation(.easeInOut(duration: 0.6).repeatForever(autoreverses: true)) {
-            dotVisible = false
+            ringRotation = 0
+            dotVisible = true
+        } else {
+            withAnimation(.easeInOut(duration: 0.8).repeatForever(autoreverses: true)) {
+                isPulsing = true
+            }
+            withAnimation(.linear(duration: 2.0).repeatForever(autoreverses: false)) {
+                ringRotation = 360
+            }
+            withAnimation(.easeInOut(duration: 0.6).repeatForever(autoreverses: true)) {
+                dotVisible = false
+            }
         }
     }
 
