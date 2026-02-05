@@ -1,66 +1,108 @@
-# wristassist
+<p align="center">
+  <img src="assets/logo.png" width="140" alt="WristAssist logo">
+</p>
 
-voice notes on your apple watch. transcribes on-device with [whisperkit](https://github.com/argmaxinc/WhisperKit). no cloud. no network. your words stay on your phone.
+<h1 align="center">WristAssist</h1>
 
-## how it works
+<p align="center">
+  <strong>Voice notes from your wrist. Transcribed on-device. Never leaves your phone.</strong>
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/platform-iOS_17+_|_watchOS_10+-black?style=flat-square" alt="Platform">
+  <img src="https://img.shields.io/badge/swift-5.9-F05138?style=flat-square&logo=swift&logoColor=white" alt="Swift">
+  <img src="https://img.shields.io/badge/license-MIT-green?style=flat-square" alt="License">
+  <img src="https://img.shields.io/badge/App_Store-In_Review-blue?style=flat-square&logo=apple&logoColor=white" alt="App Store">
+</p>
+
+<p align="center">
+  <a href="https://realworldbuilder.github.io/wristassist/">Website</a> ·
+  <a href="https://realworldbuilder.github.io/wristassist/privacy.html">Privacy</a> ·
+  <a href="https://realworldbuilder.github.io/wristassist/support.html">Support</a>
+</p>
+
+---
+
+Record a voice note on your Apple Watch or iPhone and get an instant transcription — powered by [WhisperKit](https://github.com/argmaxinc/WhisperKit), running entirely on-device. No cloud. No accounts. No data ever leaves your phone.
+
+## How It Works
 
 ```
-watch                                    phone
-┌────────────────────────────┐          ┌──────────────────────────────────┐
-│                            │          │                                  │
-│  RecordingView             │  .wav    │  ContentView                     │
-│  AudioRecorderService ─────────────▶  PhoneConnectivityManager          │
-│  ExtendedSessionManager    │          │    └─ TranscriptionService       │
-│  WatchConnectivityManager ◀────────────       └─ WhisperKit (CoreML)    │
-│                            │  text    │                                  │
-└────────────────────────────┘          └──────────────────────────────────┘
+  Apple Watch                                iPhone
+┌──────────────────────────┐           ┌─────────────────────────────────┐
+│                          │   .wav    │                                 │
+│  Tap → Record → Transfer ────────▶  │  Receive → Transcribe → Store  │
+│                          │           │      WhisperKit (CoreML)        │
+│  ◀──────────────────────────────────  │                                 │
+│       transcription text │           │  Also records directly on       │
+│                          │           │  iPhone with one tap             │
+└──────────────────────────┘           └─────────────────────────────────┘
 ```
 
-record 16kHz mono pcm on watch → `WCSession.transferFile()` → whisper inference on phone → transcription back via `sendMessage()` or `transferUserInfo()` fallback
+16kHz mono PCM on watch → `WCSession.transferFile()` → Whisper inference on phone → text sent back via `sendMessage()`
 
-## structure
+## Features
+
+| | Feature | Detail |
+|---|---|---|
+| 🎙 | **One-Tap Recording** | Start from Apple Watch — no phone needed |
+| 📱 | **iPhone Recording** | Record directly with the floating mic button |
+| 🧠 | **On-Device Transcription** | WhisperKit runs locally — no internet required |
+| 🔒 | **100% Private** | No accounts, no cloud, no analytics |
+| 📡 | **Seamless Transfer** | Watch → iPhone over Bluetooth / Wi-Fi |
+| 📋 | **Manage Notes** | Copy, share, multi-select, delete |
+| ⌚ | **Always-On Display** | Recording status visible at a glance |
+
+## Architecture
 
 ```
 WristAssist/
 ├── Shared/
-│   └── ConnectivityConstants.swift       # ipc message keys
-├── WristAssist/                          # ios target
+│   └── ConnectivityConstants.swift       # IPC message keys
+├── WristAssist/                          # iOS target
 │   ├── WristAssistApp.swift
-│   ├── ContentView.swift                 # transcription list ui
-│   ├── TranscriptionService.swift        # whisperkit wrapper
-│   ├── PhoneConnectivityManager.swift    # wcsession delegate, persistence
-│   └── Models/openai_whisper-tiny/       # bundled coreml models
+│   ├── ContentView.swift                 # Transcription list UI
+│   ├── TranscriptionService.swift        # WhisperKit wrapper
+│   ├── PhoneAudioRecorderService.swift   # iPhone recording
+│   ├── PhoneConnectivityManager.swift    # WCSession delegate + persistence
+│   └── Models/openai_whisper-tiny/       # Bundled CoreML models
 │       ├── AudioEncoder.mlmodelc
 │       ├── MelSpectrogram.mlmodelc
 │       └── TextDecoder.mlmodelc
-└── WristAssist Watch App/                # watchos target
+└── WristAssist Watch App/                # watchOS target
     ├── WristAssistWatchApp.swift
-    ├── RecordingView.swift               # record button + status
+    ├── RecordingView.swift               # Record button + status
     ├── AudioRecorderService.swift        # AVAudioRecorder 16kHz/16-bit/mono
-    ├── WatchConnectivityManager.swift    # file transfer + messaging
+    ├── WatchConnectivityManager.swift    # File transfer + messaging
     └── ExtendedSessionManager.swift      # WKExtendedRuntimeSession
 ```
 
-## setup
+## Quick Start
 
 ```bash
 git clone https://github.com/realworldbuilder/wristassist.git
 open WristAssist/WristAssist.xcodeproj
 ```
 
-spm pulls [whisperkit](https://github.com/argmaxinc/WhisperKit) `>=0.9.0` automatically. whisper tiny model is bundled — no download step.
+SPM pulls [WhisperKit](https://github.com/argmaxinc/WhisperKit) `>=0.9.0` automatically. The Whisper Tiny model is bundled — no download step.
 
-ios 17+ / watchos 10+
+## Technical Details
 
-## details
+| Area | Implementation |
+|------|---------------|
+| **Audio** | Linear PCM, 16kHz, 16-bit, mono — optimized for Whisper |
+| **Model** | Loaded async from bundle on first launch (`download: false`) |
+| **Storage** | `Documents/transcriptions.json`, Codable |
+| **Threading** | `@MainActor`, ML inference runs async |
+| **Watch Runtime** | `WKExtendedRuntimeSession` keeps watch awake during transfer |
+| **Connectivity** | `sendMessage()` when reachable, `transferUserInfo()` fallback, 60s timeout |
 
-- **audio** — linear pcm, 16kHz, 16-bit, mono. optimized for whisper input
-- **model** — loaded async from bundle on first launch. no network fetch (`download: false`)
-- **storage** — `Documents/transcriptions.json`, codable
-- **threading** — `@MainActor` everywhere, ml inference runs async
-- **watch runtime** — `WKExtendedRuntimeSession` keeps watch awake during transfer
-- **connectivity** — `sendMessage()` when reachable, `transferUserInfo()` fallback, 60s timeout
+## Privacy
 
-## license
+WristAssist collects **zero data**. No analytics, no tracking, no network calls. Microphone access is the only permission requested. Audio is processed locally and transcriptions are stored on your device.
 
-[mit](LICENSE)
+Read the full [privacy policy](https://realworldbuilder.github.io/wristassist/privacy.html).
+
+## License
+
+[MIT](LICENSE)
